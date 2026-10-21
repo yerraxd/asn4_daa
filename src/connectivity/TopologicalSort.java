@@ -5,6 +5,7 @@ import graph.Graph;
 
 import java.util.ArrayDeque;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Queue;
 
@@ -56,5 +57,29 @@ public class TopologicalSort {
             return new TopoResult(new ArrayList<>(), true, examined, pushes, pops, time);
         }
         return new TopoResult(order, false, examined, pushes, pops, time);
+    }
+
+    public boolean isValidOrder(Graph graph, List<Integer> order) {
+        int n = graph.getVertexCount();
+        if (order.size() != n) {
+            return false;
+        }
+
+        int[] position = new int[n];
+        Arrays.fill(position, -1);
+        for (int i = 0; i < n; i++) {
+            int v = order.get(i);
+            if (v < 0 || v >= n || position[v] != -1) {
+                return false;
+            }
+            position[v] = i;
+        }
+
+        for (Edge e : graph.getEdges()) {
+            if (position[e.from] >= position[e.to]) {
+                return false;
+            }
+        }
+        return true;
     }
 }
