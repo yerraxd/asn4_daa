@@ -22,6 +22,8 @@ public class TarjanSCC {
     private long dfsCalls;
 
     public SCCResult run(Graph graph) {
+        long startTime = System.nanoTime();
+
         this.graph = graph;
         int n = graph.getVertexCount();
         index = new int[n];
@@ -40,7 +42,9 @@ public class TarjanSCC {
                 dfs(v);
             }
         }
-        return new SCCResult(components, componentOf, examined, dfsCalls);
+
+        long time = System.nanoTime() - startTime;
+        return new SCCResult(components, componentOf, examined, dfsCalls, time);
     }
 
     private void dfs(int v) {
