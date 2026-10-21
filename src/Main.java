@@ -1,3 +1,5 @@
+import connectivity.SCCResult;
+import connectivity.TarjanSCC;
 import connectivity.TopoResult;
 import connectivity.TopologicalSort;
 import graph.Edge;
@@ -39,6 +41,19 @@ public class Main {
         cyclic.addEdge(2, 0, 1);
         cyclic.addEdge(2, 3, 1);
         topo("Graph with cycle", cyclic);
+
+        Graph city = new Graph(8, true);
+        city.addEdge(0, 1, 1);
+        city.addEdge(1, 2, 1);
+        city.addEdge(2, 0, 1);
+        city.addEdge(2, 3, 1);
+        city.addEdge(3, 4, 1);
+        city.addEdge(4, 5, 1);
+        city.addEdge(5, 3, 1);
+        city.addEdge(6, 5, 1);
+        city.addEdge(6, 7, 1);
+        city.addEdge(7, 6, 1);
+        scc("City with one-way roads", city);
     }
 
     private static void compare(String name, Graph graph) {
@@ -74,6 +89,16 @@ public class Main {
         }
         System.out.println("examined=" + r.edgesExamined + " push=" + r.queuePushes
                 + " pop=" + r.queuePops + " ns=" + r.timeNanos);
+        System.out.println();
+    }
+
+    private static void scc(String name, Graph graph) {
+        SCCResult r = new TarjanSCC().run(graph);
+        System.out.println("=== " + name + " ===");
+        System.out.println("Components: " + r.components.size());
+        System.out.println(r.components);
+        System.out.println("examined=" + r.edgesExamined + " dfs=" + r.dfsCalls
+                + " ns=" + r.timeNanos);
         System.out.println();
     }
 }
