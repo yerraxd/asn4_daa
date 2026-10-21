@@ -13,6 +13,19 @@ This project implements six graph components in plain Java, with no external lib
 
 Every algorithm returns a result object that holds the answer, the running time measured with `System.nanoTime()`, and operation counters (edges examined, comparisons, DSU calls, heap pushes and pops, DFS calls, relaxations). The benchmark and the tests read these counters, so nothing is counted outside the algorithms themselves.
 
+## How to run Requirements: 
+JDK 9 or newer (the code uses List.of). No external libraries. Run all commands from the project root, because the benchmark and the tests write their tables to results/tables/ using a relative path. 
+
+```
+javac -d out src/*.java src/*/*.java 
+java -cp out Main
+java -cp out test.AlgorithmTests
+java -cp out benchmark.Benchmark
+```
+- `Main prints a demo of every algorithm.
+- test.AlgorithmTests runs the 40 checks and writes results/tables/tests.csv.
+- benchmark.Benchmark runs the experiments and writes results/tables/benchmark.csv`.
+
 ### Graph representation
 
 `Graph` stores the vertex count, a `directed` flag, one list with all edges and one adjacency list per vertex. An `Edge` has `from`, `to` and a `double` weight.
@@ -63,6 +76,9 @@ Recursive DFS with `index`, `lowLink` and an explicit stack. When `lowLink[v] ==
 ### Dijkstra
 
 Binary heap with lazy deletion: instead of decreasing a key, a new node is pushed whenever a shorter distance is found, and outdated nodes are skipped when popped. Distances are `double`, unreachable vertices keep `Double.POSITIVE_INFINITY`. The algorithm rejects negative weights up front with an `IllegalArgumentException`, because the correctness argument for Dijkstra breaks with them. `relaxations` counts successful distance updates.
+
+Why Dijkstra fails with negative weights
+Dijkstra's  assumes edge weights are non-negative, meaning a vertex's first-pulled distance is permanently final. Negative edges break this rule by creating shorter paths later. Re-evaluating nodes slows the algorithm to exponential time, while negative cycles cause infinite loops.
 
 ### Validators
 
