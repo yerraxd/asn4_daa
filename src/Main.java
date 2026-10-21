@@ -80,6 +80,13 @@ public class Main {
             System.out.println("Negative weights: " + ex.getMessage());
             System.out.println();
         }
+        Graph oneWay = new Graph(5, true);
+        oneWay.addEdge(0, 1, 2);
+        oneWay.addEdge(1, 2, 3);
+        oneWay.addEdge(0, 2, 7);
+        oneWay.addEdge(2, 3, 1);
+        oneWay.addEdge(4, 0, 1);
+        dijkstra("One-way roads", oneWay, 0);
     }
 
     private static void compare(String name, Graph graph) {
