@@ -1,0 +1,42 @@
+id,check,result
+1,"small: Kruskal weight = 6",PASS
+2,"small: Prim weight = 6",PASS
+3,"small: MST has V-1 edges",PASS
+4,"small: connected flag",PASS
+5,"disconnected: Kruskal forest weight = 10",PASS
+6,"disconnected: Prim forest weight = 10",PASS
+7,"disconnected: forest has V-2 edges",PASS
+8,"disconnected: connected = false",PASS
+9,"multiple MST: Kruskal weight = 3",PASS
+10,"multiple MST: weights equal",PASS
+11,"duplicate weights K5: Kruskal = 4",PASS
+12,"duplicate weights K5: Prim = 4",PASS
+13,"single vertex: Kruskal weight 0, no edges, connected",PASS
+14,"single vertex: Prim weight 0, no edges, connected",PASS
+15,"single vertex: topo order =, no cycle",PASS
+16,"single vertex: one SCC",PASS
+17,"single vertex: dist[0] = 0",PASS
+18,"cycle: detected by topological sort",PASS
+19,"cycle: no order returned",PASS
+20,"DAG: no cycle",PASS
+21,"DAG: order is valid",PASS
+22,"SCC: valid partition",PASS
+23,"SCC: 2 components",PASS
+24,"SCC: {0,1,2} together, 3 apart",PASS
+25,"SCC on DAG: every vertex is its own component",PASS
+26,"unreachable: dist[2] = 8",PASS
+27,"unreachable: vertex 3 is unreachable",PASS
+28,"unreachable: dist[3] = infinity",PASS
+29,"unreachable: path to 3 is empty",PASS
+30,"Dijkstra: dist to 4 = 20",PASS
+31,"Dijkstra: path to 4 = [0, 2, 5, 4]",PASS
+32,"Dijkstra: result passes isValid",PASS
+33,"Dijkstra: negative weight rejected",PASS
+34,"random connected: Kruskal weight == Prim weight, V-1 edges",PASS
+35,"random with duplicate weights: Kruskal == Prim",PASS
+36,"random DAGs: valid topological order, no false cycle",PASS
+37,"random directed: every vertex in exactly one SCC",PASS
+38,"random directed: cycle detection agrees with SCC",PASS
+39,"random graphs: Dijkstra == Bellman-Ford (incl. unreachable)",PASS
+40,"random graphs: Dijkstra result passes isValid",PASS
+total,40 checks,40 passed / 0 failed

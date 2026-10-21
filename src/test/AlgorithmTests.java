@@ -12,22 +12,31 @@ import mst.Prim;
 import shortestpath.Dijkstra;
 import shortestpath.PathResult;
 import java.util.List;
+import graph.GraphGenerator;
+import java.util.Arrays;
+import java.util.Random;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.ArrayList;
 
 public class AlgorithmTests {
     private static int passed = 0;
     private static int failed = 0;
     private static final double EPS = 1e-9;
+    private static final List<String> rows = new ArrayList<>();
 
     static void check(String name, boolean ok) {
         if (ok) {
             passed++;
-            System.out.println("PASS " + name);
+            System.out.println("PASS  " + name);
         } else {
             failed++;
-            System.out.println("FAIL " + name);
+            System.out.println("FAIL  " + name);
         }
+        rows.add(rows.size() + 1 + ",\"" + name.replace("\"", "\"\"") + "\"," + (ok ? "PASS" : "FAIL"));
     }
-
     static Graph build(int n, boolean directed, double[][] edges) {
         Graph g = new Graph(n, directed);
         for (double[] e : edges) {
@@ -40,12 +49,25 @@ public class AlgorithmTests {
         return Math.abs(a - b) < EPS;
     }
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException {
         edgeCaseTests();
+        randomTests();
+
         System.out.println("\n" + passed + " passed, " + failed + " failed");
+        writeTable();
         if (failed > 0) {
             System.exit(1);
         }
+    }
+
+    static void writeTable() throws IOException {
+        List<String> out = new ArrayList<>();
+        out.add("id,check,result");
+        out.addAll(rows);
+        out.add("total," + (passed + failed) + " checks," + passed + " passed / " + failed + " failed");
+        Path file = Paths.get("results", "tables", "tests.csv");
+        Files.createDirectories(file.getParent());
+        Files.write(file, out);
     }
 
     static void edgeCaseTests() {
@@ -145,4 +167,129 @@ public class AlgorithmTests {
         }
         check("Dijkstra: negative weight rejected", threw);
     }
+    static final int RUNS = 100;
+
+    static void randomTests() {
+        boolean mstOk = true;
+        for (int seed = 0; seed < RUNS; seed++) {
+            Random r = new Random(seed);
+            int n = 2 + r.nextInt(60);
+            int maxE = n * (n - 1) / 2;
+            int m = n - 1 + r.nextInt(Math.min(3 * n, maxE - (n - 1)) + 1);
+            Graph g = GraphGenerator.connectedUndirected(n, m, seed);
+            MSTResult k = new Kruskal().run(g);
+            MSTResult p = new Prim().run(g);
+            if (!same(k.totalWeight, p.totalWeight) || !k.connected || !p.connected
+                    || k.edges.size() != n - 1 || p.edges.size() != n - 1) {
+                mstOk = false;
+                System.out.println("  MST mismatch, seed=" + seed);
+            }
+        }
+        check("random connected: Kruskal weight == Prim weight, V-1 edges", mstOk);
+
+        boolean dupOk = true;
+        for (int seed = 0; seed < RUNS; seed++) {
+            Random r = new Random(seed);
+            int n = 2 + r.nextInt(60);
+            int maxE = n * (n - 1) / 2;
+            int m = n - 1 + r.nextInt(Math.min(3 * n, maxE - (n - 1)) + 1);
+            Graph base = GraphGenerator.connectedUndirected(n, m, seed);
+            Graph g = new Graph(n, false);
+            for (Edge e : base.getEdges()) {
+                g.addEdge(e.from, e.to, 1 + ((int) e.weight % 3));
+            }
+            if (!same(new Kruskal().run(g).totalWeight, new Prim().run(g).totalWeight)) {
+                dupOk = false;
+                System.out.println("  duplicate-weights mismatch, seed=" + seed);
+            }
+        }
+        check("random with duplicate weights: Kruskal == Prim", dupOk);
+
+        boolean dagOk = true;
+        TopologicalSort sorter = new TopologicalSort();
+        for (int seed = 0; seed < RUNS; seed++) {
+            Random r = new Random(seed);
+            int n = 2 + r.nextInt(60);
+            int m = r.nextInt(Math.min(3 * n, n * (n - 1) / 2) + 1);
+            Graph g = GraphGenerator.dag(n, m, seed);
+            TopoResult t = sorter.run(g);
+            if (t.hasCycle || !sorter.isValidOrder(g, t.order)) {
+                dagOk = false;
+                System.out.println("  bad topological order, seed=" + seed);
+            }
+        }
+        check("random DAGs: valid topological order, no false cycle", dagOk);
+
+        boolean partitionOk = true;
+        boolean cycleOk = true;
+        TarjanSCC tarjan = new TarjanSCC();
+        for (int seed = 0; seed < RUNS; seed++) {
+            Random r = new Random(seed);
+            int n = 2 + r.nextInt(40);
+            int m = r.nextInt(Math.min(3 * n, n * (n - 1)) + 1);
+            Graph g = GraphGenerator.directed(n, m, seed);
+            SCCResult s = tarjan.run(g);
+            if (!tarjan.isValidPartition(g, s)) {
+                partitionOk = false;
+            }
+            boolean hasBigScc = s.components.size() < n;
+            if (sorter.run(g).hasCycle != hasBigScc) {
+                cycleOk = false;
+                System.out.println("  cycle/SCC disagreement, seed=" + seed);
+            }
+        }
+        check("random directed: every vertex in exactly one SCC", partitionOk);
+        check("random directed: cycle detection agrees with SCC", cycleOk);
+
+        boolean dijOk = true;
+        boolean validOk = true;
+        for (int seed = 0; seed < RUNS; seed++) {
+            Random r = new Random(seed);
+            int n = 2 + r.nextInt(50);
+            Graph g;
+            if (seed % 2 == 0) {
+                int m = r.nextInt(Math.min(3 * n, n * (n - 1)) + 1);
+                g = GraphGenerator.directed(n, m, seed);
+            } else {
+                int maxE = n * (n - 1) / 2;
+                int m = n - 1 + r.nextInt(Math.min(3 * n, maxE - (n - 1)) + 1);
+                g = GraphGenerator.connectedUndirected(n, m, seed);
+            }
+            Dijkstra dj = new Dijkstra();
+            PathResult res = dj.run(g, 0);
+            double[] ref = bellmanFord(g, 0);
+            for (int v = 0; v < n; v++) {
+                boolean bothInf = Double.isInfinite(res.distances[v]) && Double.isInfinite(ref[v]);
+                if (!bothInf && !same(res.distances[v], ref[v])) {
+                    dijOk = false;
+                    System.out.println("  Dijkstra mismatch, seed=" + seed + " vertex=" + v);
+                    break;
+                }
+            }
+            if (!dj.isValid(g, res)) {
+                validOk = false;
+            }
+        }
+        check("random graphs: Dijkstra == Bellman-Ford (incl. unreachable)", dijOk);
+        check("random graphs: Dijkstra result passes isValid", validOk);
+    }
+
+    static double[] bellmanFord(Graph g, int source) {
+        int n = g.getVertexCount();
+        double[] d = new double[n];
+        Arrays.fill(d, Double.POSITIVE_INFINITY);
+        d[source] = 0;
+        for (int i = 0; i < n; i++) {
+            for (Edge e : g.getEdges()) {
+                if (d[e.from] + e.weight < d[e.to]) {
+                    d[e.to] = d[e.from] + e.weight;
+                }
+                if (!g.isDirected() && d[e.to] + e.weight < d[e.from]) {
+                    d[e.from] = d[e.to] + e.weight;
+                }
+            }
+        }
+        return d;
+    }
+
 }
