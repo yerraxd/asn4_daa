@@ -13,6 +13,7 @@ public class TarjanSCC {
     private Graph graph;
     private int[] index;
     private int[] lowLink;
+    private int[] componentOf;
     private boolean[] onStack;
     private Deque<Integer> stack;
     private List<List<Integer>> components;
@@ -23,6 +24,7 @@ public class TarjanSCC {
         int n = graph.getVertexCount();
         index = new int[n];
         lowLink = new int[n];
+        componentOf = new int[n];
         onStack = new boolean[n];
         stack = new ArrayDeque<>();
         components = new ArrayList<>();
@@ -34,7 +36,7 @@ public class TarjanSCC {
                 dfs(v);
             }
         }
-        return new SCCResult(components);
+        return new SCCResult(components, componentOf);
     }
 
     private void dfs(int v) {
@@ -56,10 +58,12 @@ public class TarjanSCC {
 
         if (lowLink[v] == index[v]) {
             List<Integer> component = new ArrayList<>();
+            int id = components.size();
             int w;
             do {
                 w = stack.pop();
                 onStack[w] = false;
+                componentOf[w] = id;
                 component.add(w);
             } while (w != v);
             components.add(component);
