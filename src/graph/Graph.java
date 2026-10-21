@@ -18,11 +18,19 @@ public class Graph {
     }
 
     public void addEdge(int from, int to, double weight) {
+        checkVertex(from);
+        checkVertex(to);
         Edge edge = new Edge(from, to, weight);
         edges.add(edge);
         adjacency.get(from).add(edge);
         if (!directed) {
             adjacency.get(to).add(new Edge(to, from, weight));
+        }
+    }
+
+    private void checkVertex(int v) {
+        if (v < 0 || v >= vertices) {
+            throw new IllegalArgumentException("Invalid vertex: " + v);
         }
     }
 
@@ -43,6 +51,7 @@ public class Graph {
     }
 
     public List<Edge> getAdjacent(int v) {
+        checkVertex(v);
         return adjacency.get(v);
     }
 }
