@@ -3,6 +3,8 @@ package dsu;
 public class DSU {
     private final int[] parent;
     private final int[] rank;
+    private long findCalls;
+    private long unionCalls;
 
     public DSU(int size) {
         parent = new int[size];
@@ -13,13 +15,19 @@ public class DSU {
     }
 
     public int find(int x) {
+        findCalls++;
+        return root(x);
+    }
+
+    private int root(int x) {
         if (parent[x] != x) {
-            parent[x] = find(parent[x]);
+            parent[x] = root(parent[x]);
         }
         return parent[x];
     }
 
     public boolean union(int a, int b) {
+        unionCalls++;
         int rootA = find(a);
         int rootB = find(b);
         if (rootA == rootB) {
@@ -34,5 +42,13 @@ public class DSU {
             rank[rootA]++;
         }
         return true;
+    }
+
+    public long getFindCalls() {
+        return findCalls;
+    }
+
+    public long getUnionCalls() {
+        return unionCalls;
     }
 }
