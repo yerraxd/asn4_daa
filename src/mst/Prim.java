@@ -14,6 +14,10 @@ public class Prim {
     private long pops;
 
     public MSTResult run(Graph graph) {
+        if (graph.isDirected()) {
+            throw new IllegalArgumentException("Prim requires an undirected graph");
+        }
+
         long startTime = System.nanoTime();
         examined = 0;
         comparisons = 0;
