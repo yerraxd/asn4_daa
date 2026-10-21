@@ -16,13 +16,13 @@ public class Dijkstra {
         Arrays.fill(parent, -1);
         dist[source] = 0;
 
-        PriorityQueue<double[]> queue = new PriorityQueue<>((a, b) -> Double.compare(a[0], b[0]));
-        queue.add(new double[]{0, source});
+        PriorityQueue<Node> queue = new PriorityQueue<>((a, b) -> Double.compare(a.dist, b.dist));
+        queue.add(new Node(source, 0));
 
         while (!queue.isEmpty()) {
-            double[] top = queue.poll();
-            int u = (int) top[1];
-            if (top[0] > dist[u]) {
+            Node top = queue.poll();
+            int u = top.vertex;
+            if (top.dist > dist[u]) {
                 continue;
             }
             for (Edge e : graph.getAdjacent(u)) {
@@ -30,10 +30,20 @@ public class Dijkstra {
                 if (candidate < dist[e.to]) {
                     dist[e.to] = candidate;
                     parent[e.to] = u;
-                    queue.add(new double[]{candidate, e.to});
+                    queue.add(new Node(e.to, candidate));
                 }
             }
         }
         return new PathResult(source, dist, parent);
+    }
+
+    private static class Node {
+        final int vertex;
+        final double dist;
+
+        Node(int vertex, double dist) {
+            this.vertex = vertex;
+            this.dist = dist;
+        }
     }
 }
