@@ -4,6 +4,7 @@ import graph.Graph;
 import graph.GraphGenerator;
 import mst.Kruskal;
 import mst.MSTResult;
+import mst.Prim;
 
 public class Benchmark {
     private static final long SEED = 42;
@@ -33,9 +34,9 @@ public class Benchmark {
             Graph undirected = GraphGenerator.connectedUndirected(n, m, SEED);
 
             measure("Kruskal", "undirected", n, m, () -> kruskal(undirected));
+            measure("Prim", "undirected", n, m, () -> prim(undirected));
         }
     }
-
     private static void measure(String algorithm, String graphType, int n, int m, Run run) {
         long total = 0;
         Counters last = null;
@@ -55,6 +56,16 @@ public class Benchmark {
         c.comparisons = r.comparisons;
         c.find = r.findOps;
         c.union = r.unionOps;
+        return c;
+    }
+    private static Counters prim(Graph g) {
+        MSTResult r = new Prim().run(g);
+        Counters c = new Counters();
+        c.time = r.timeNanos;
+        c.examined = r.edgesExamined;
+        c.comparisons = r.comparisons;
+        c.pushes = r.pqPushes;
+        c.pops = r.pqPops;
         return c;
     }
 }
