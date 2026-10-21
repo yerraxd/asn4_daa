@@ -18,6 +18,8 @@ public class TarjanSCC {
     private Deque<Integer> stack;
     private List<List<Integer>> components;
     private int counter;
+    private long examined;
+    private long dfsCalls;
 
     public SCCResult run(Graph graph) {
         this.graph = graph;
@@ -29,6 +31,8 @@ public class TarjanSCC {
         stack = new ArrayDeque<>();
         components = new ArrayList<>();
         counter = 0;
+        examined = 0;
+        dfsCalls = 0;
         Arrays.fill(index, -1);
 
         for (int v = 0; v < n; v++) {
@@ -36,10 +40,11 @@ public class TarjanSCC {
                 dfs(v);
             }
         }
-        return new SCCResult(components, componentOf);
+        return new SCCResult(components, componentOf, examined, dfsCalls);
     }
 
     private void dfs(int v) {
+        dfsCalls++;
         index[v] = counter;
         lowLink[v] = counter;
         counter++;
@@ -47,6 +52,7 @@ public class TarjanSCC {
         onStack[v] = true;
 
         for (Edge e : graph.getAdjacent(v)) {
+            examined++;
             int w = e.to;
             if (index[w] == -1) {
                 dfs(w);
