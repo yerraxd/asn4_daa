@@ -31,13 +31,13 @@ public class Kruskal {
             if (dsu.union(e.from, e.to)) {
                 result.add(e);
                 total += e.weight;
-                if (result.size() == n - 1) {
+                if (dsu.getComponents() == 1) {
                     break;
                 }
             }
         }
 
-        boolean connected = n == 0 || result.size() == n - 1;
+        boolean connected = dsu.getComponents() <= 1;
         long time = System.nanoTime() - start;
 
         return new MSTResult(result, total, connected, examined, comparisons[0],
