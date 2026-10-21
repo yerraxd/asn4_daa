@@ -2,9 +2,11 @@ package dsu;
 
 public class DSU {
     private final int[] parent;
+    private final int[] rank;
 
     public DSU(int size) {
         parent = new int[size];
+        rank = new int[size];
         for (int i = 0; i < size; i++) {
             parent[i] = i;
         }
@@ -23,7 +25,14 @@ public class DSU {
         if (rootA == rootB) {
             return false;
         }
-        parent[rootA] = rootB;
+        if (rank[rootA] < rank[rootB]) {
+            parent[rootA] = rootB;
+        } else if (rank[rootA] > rank[rootB]) {
+            parent[rootB] = rootA;
+        } else {
+            parent[rootB] = rootA;
+            rank[rootA]++;
+        }
         return true;
     }
 }
