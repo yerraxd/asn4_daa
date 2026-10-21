@@ -10,14 +10,21 @@ public class PathResult {
     public final int[] parents;
     public final long edgesExamined;
     public final long relaxations;
+    public final long pqPushes;
+    public final long pqPops;
+    public final long comparisons;
 
     public PathResult(int source, double[] distances, int[] parents,
-                      long edgesExamined, long relaxations) {
+                      long edgesExamined, long relaxations,
+                      long pqPushes, long pqPops, long comparisons) {
         this.source = source;
         this.distances = distances;
         this.parents = parents;
         this.edgesExamined = edgesExamined;
         this.relaxations = relaxations;
+        this.pqPushes = pqPushes;
+        this.pqPops = pqPops;
+        this.comparisons = comparisons;
     }
 
     public boolean isReachable(int v) {

@@ -9,6 +9,9 @@ import java.util.PriorityQueue;
 public class Dijkstra {
     private long examined;
     private long relaxations;
+    private long pushes;
+    private long pops;
+    private long comparisons;
 
     public PathResult run(Graph graph, int source) {
         int n = graph.getVertexCount();
@@ -23,6 +26,9 @@ public class Dijkstra {
 
         examined = 0;
         relaxations = 0;
+        pushes = 0;
+        pops = 0;
+        comparisons = 0;
 
         double[] dist = new double[n];
         int[] parent = new int[n];
@@ -30,11 +36,16 @@ public class Dijkstra {
         Arrays.fill(parent, -1);
         dist[source] = 0;
 
-        PriorityQueue<Node> queue = new PriorityQueue<>((a, b) -> Double.compare(a.dist, b.dist));
+        PriorityQueue<Node> queue = new PriorityQueue<>((a, b) -> {
+            comparisons++;
+            return Double.compare(a.dist, b.dist);
+        });
         queue.add(new Node(source, 0));
+        pushes++;
 
         while (!queue.isEmpty()) {
             Node top = queue.poll();
+            pops++;
             int u = top.vertex;
             if (top.dist > dist[u]) {
                 continue;
@@ -47,10 +58,11 @@ public class Dijkstra {
                     parent[e.to] = u;
                     relaxations++;
                     queue.add(new Node(e.to, candidate));
+                    pushes++;
                 }
             }
         }
-        return new PathResult(source, dist, parent, examined, relaxations);
+        return new PathResult(source, dist, parent, examined, relaxations, pushes, pops, comparisons);
     }
 
     private static class Node {
