@@ -3,12 +3,14 @@ package dsu;
 public class DSU {
     private final int[] parent;
     private final int[] rank;
+    private int components;
     private long findCalls;
     private long unionCalls;
 
     public DSU(int size) {
         parent = new int[size];
         rank = new int[size];
+        components = size;
         for (int i = 0; i < size; i++) {
             parent[i] = i;
         }
@@ -41,7 +43,12 @@ public class DSU {
             parent[rootB] = rootA;
             rank[rootA]++;
         }
+        components--;
         return true;
+    }
+
+    public int getComponents() {
+        return components;
     }
 
     public long getFindCalls() {
