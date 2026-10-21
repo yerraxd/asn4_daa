@@ -70,6 +70,45 @@ public class Dijkstra {
                 pushes, pops, comparisons, time);
     }
 
+    public boolean isValid(Graph graph, PathResult r) {
+        int n = graph.getVertexCount();
+        if (r.distances[r.source] != 0) {
+            return false;
+        }
+
+        for (int u = 0; u < n; u++) {
+            if (!r.isReachable(u)) {
+                continue;
+            }
+            for (Edge e : graph.getAdjacent(u)) {
+                if (r.distances[e.to] > r.distances[u] + e.weight + 1e-9) {
+                    return false;
+                }
+            }
+        }
+
+        for (int v = 0; v < n; v++) {
+            if (v == r.source || !r.isReachable(v)) {
+                continue;
+            }
+            int p = r.parents[v];
+            if (p == -1) {
+                return false;
+            }
+            boolean found = false;
+            for (Edge e : graph.getAdjacent(p)) {
+                if (e.to == v && Math.abs(r.distances[p] + e.weight - r.distances[v]) < 1e-9) {
+                    found = true;
+                    break;
+                }
+            }
+            if (!found) {
+                return false;
+            }
+        }
+        return true;
+    }
+
     private static class Node {
         final int vertex;
         final double dist;
