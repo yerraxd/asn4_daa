@@ -1,3 +1,5 @@
+import connectivity.TopoResult;
+import connectivity.TopologicalSort;
 import graph.Edge;
 import graph.Graph;
 import mst.Kruskal;
@@ -21,6 +23,22 @@ public class Main {
         d.addEdge(1, 2, 2);
         d.addEdge(3, 4, 5);
         compare("Disconnected graph", d);
+
+        Graph dag = new Graph(6, true);
+        dag.addEdge(5, 2, 1);
+        dag.addEdge(5, 0, 1);
+        dag.addEdge(4, 0, 1);
+        dag.addEdge(4, 1, 1);
+        dag.addEdge(2, 3, 1);
+        dag.addEdge(3, 1, 1);
+        topo("DAG", dag);
+
+        Graph cyclic = new Graph(4, true);
+        cyclic.addEdge(0, 1, 1);
+        cyclic.addEdge(1, 2, 1);
+        cyclic.addEdge(2, 0, 1);
+        cyclic.addEdge(2, 3, 1);
+        topo("Graph with cycle", cyclic);
     }
 
     private static void compare(String name, Graph graph) {
@@ -42,5 +60,18 @@ public class Main {
         System.out.println("  examined=" + r.edgesExamined + " cmp=" + r.comparisons
                 + " find=" + r.findOps + " union=" + r.unionOps
                 + " pqPush=" + r.pqPushes + " pqPop=" + r.pqPops + " ns=" + r.timeNanos);
+    }
+
+    private static void topo(String name, Graph graph) {
+        TopoResult r = new TopologicalSort().run(graph);
+        System.out.println("=== " + name + " ===");
+        if (r.hasCycle) {
+            System.out.println("Cycle detected, no topological order");
+        } else {
+            System.out.println("Order: " + r.order);
+        }
+        System.out.println("examined=" + r.edgesExamined + " push=" + r.queuePushes
+                + " pop=" + r.queuePops + " ns=" + r.timeNanos);
+        System.out.println();
     }
 }
