@@ -11,6 +11,8 @@ import java.util.Queue;
 public class TopologicalSort {
 
     public TopoResult run(Graph graph) {
+        long start = System.nanoTime();
+
         int n = graph.getVertexCount();
         long examined = 0;
         long pushes = 0;
@@ -45,9 +47,10 @@ public class TopologicalSort {
             }
         }
 
+        long time = System.nanoTime() - start;
         if (order.size() != n) {
-            return new TopoResult(new ArrayList<>(), true, examined, pushes, pops);
+            return new TopoResult(new ArrayList<>(), true, examined, pushes, pops, time);
         }
-        return new TopoResult(order, false, examined, pushes, pops);
+        return new TopoResult(order, false, examined, pushes, pops, time);
     }
 }
