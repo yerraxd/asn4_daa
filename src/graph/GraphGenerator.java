@@ -10,6 +10,14 @@ import java.util.Set;
 public class GraphGenerator {
 
     public static Graph connectedUndirected(int n, int edges, long seed) {
+        if (n < 1) {
+            throw new IllegalArgumentException("Vertex count must be positive");
+        }
+        long maxEdges = (long) n * (n - 1) / 2;
+        if (edges < n - 1 || edges > maxEdges) {
+            throw new IllegalArgumentException("Edge count must be between " + (n - 1) + " and " + maxEdges);
+        }
+
         Random random = new Random(seed);
         Graph graph = new Graph(n, false);
         Set<Long> used = new HashSet<>();
