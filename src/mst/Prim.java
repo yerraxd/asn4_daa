@@ -14,6 +14,7 @@ public class Prim {
     private long pops;
 
     public MSTResult run(Graph graph) {
+        long startTime = System.nanoTime();
         examined = 0;
         comparisons = 0;
         pushes = 0;
@@ -53,7 +54,8 @@ public class Prim {
         }
 
         boolean connected = components <= 1;
-        return new MSTResult(result, total, connected, examined, comparisons, 0, 0, pushes, pops, 0);
+        long time = System.nanoTime() - startTime;
+        return new MSTResult(result, total, connected, examined, comparisons, 0, 0, pushes, pops, time);
     }
 
     private void push(PriorityQueue<Edge> queue, Graph graph, int v) {
