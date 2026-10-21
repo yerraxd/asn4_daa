@@ -63,12 +63,14 @@ public class Main {
     }
 
     private static void topo(String name, Graph graph) {
-        TopoResult r = new TopologicalSort().run(graph);
+        TopologicalSort sorter = new TopologicalSort();
+        TopoResult r = sorter.run(graph);
         System.out.println("=== " + name + " ===");
         if (r.hasCycle) {
             System.out.println("Cycle detected, no topological order");
         } else {
             System.out.println("Order: " + r.order);
+            System.out.println("Valid: " + sorter.isValidOrder(graph, r.order));
         }
         System.out.println("examined=" + r.edgesExamined + " push=" + r.queuePushes
                 + " pop=" + r.queuePops + " ns=" + r.timeNanos);
