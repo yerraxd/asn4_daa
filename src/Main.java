@@ -59,7 +59,7 @@ public class Main {
         scc("SCC on DAG", dag);
         scc("SCC on graph with cycle", cyclic);
 
-        Graph road = new Graph(6, false);
+        Graph road = new Graph(7, false);
         road.addEdge(0, 1, 7);
         road.addEdge(0, 2, 9);
         road.addEdge(0, 5, 14);
@@ -125,8 +125,12 @@ public class Main {
         PathResult r = new Dijkstra().run(graph, source);
         System.out.println("=== " + name + " ===");
         for (int v = 0; v < graph.getVertexCount(); v++) {
-            System.out.println(source + " -> " + v + ": dist=" + r.distances[v]
-                    + " path=" + r.getPath(v));
+            if (r.isReachable(v)) {
+                System.out.println(source + " -> " + v + ": dist=" + r.distances[v]
+                        + " path=" + r.getPath(v));
+            } else {
+                System.out.println(source + " -> " + v + ": unreachable");
+            }
         }
         System.out.println();
     }
