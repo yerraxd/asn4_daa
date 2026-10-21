@@ -10,6 +10,8 @@ import java.util.List;
 public class Kruskal {
 
     public MSTResult run(Graph graph) {
+        long start = System.nanoTime();
+
         int n = graph.getVertexCount();
         List<Edge> sorted = new ArrayList<>(graph.getEdges());
 
@@ -36,6 +38,9 @@ public class Kruskal {
         }
 
         boolean connected = n == 0 || result.size() == n - 1;
-        return new MSTResult(result, total, connected, examined, comparisons[0]);
+        long time = System.nanoTime() - start;
+
+        return new MSTResult(result, total, connected, examined, comparisons[0],
+                dsu.getFindCalls(), dsu.getUnionCalls(), time);
     }
 }
