@@ -70,6 +70,16 @@ public class Main {
         road.addEdge(3, 4, 6);
         road.addEdge(4, 5, 9);
         dijkstra("City roads", road, 0);
+        Graph negative = new Graph(3, true);
+        negative.addEdge(0, 1, 4);
+        negative.addEdge(0, 2, 5);
+        negative.addEdge(2, 1, -3);
+        try {
+            new Dijkstra().run(negative, 0);
+        } catch (IllegalArgumentException ex) {
+            System.out.println("Negative weights: " + ex.getMessage());
+            System.out.println();
+        }
     }
 
     private static void compare(String name, Graph graph) {
