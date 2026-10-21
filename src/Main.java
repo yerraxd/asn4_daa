@@ -122,7 +122,8 @@ public class Main {
     }
 
     private static void dijkstra(String name, Graph graph, int source) {
-        PathResult r = new Dijkstra().run(graph, source);
+        Dijkstra solver = new Dijkstra();
+        PathResult r = solver.run(graph, source);
         System.out.println("=== " + name + " ===");
         for (int v = 0; v < graph.getVertexCount(); v++) {
             if (r.isReachable(v)) {
@@ -132,6 +133,7 @@ public class Main {
                 System.out.println(source + " -> " + v + ": unreachable");
             }
         }
+        System.out.println("Valid: " + solver.isValid(graph, r));
         System.out.println("examined=" + r.edgesExamined + " relax=" + r.relaxations
                 + " pqPush=" + r.pqPushes + " pqPop=" + r.pqPops
                 + " cmp=" + r.comparisons + " ns=" + r.timeNanos);
