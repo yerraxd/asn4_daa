@@ -8,15 +8,27 @@ import java.util.List;
 import java.util.PriorityQueue;
 
 public class Prim {
+    private long examined;
+    private long comparisons;
+    private long pushes;
+    private long pops;
 
     public MSTResult run(Graph graph) {
+        examined = 0;
+        comparisons = 0;
+        pushes = 0;
+        pops = 0;
+
         int n = graph.getVertexCount();
         boolean[] visited = new boolean[n];
         List<Edge> result = new ArrayList<>();
         double total = 0;
         int components = 0;
 
-        PriorityQueue<Edge> queue = new PriorityQueue<>((a, b) -> Double.compare(a.weight, b.weight));
+        PriorityQueue<Edge> queue = new PriorityQueue<>((a, b) -> {
+            comparisons++;
+            return Double.compare(a.weight, b.weight);
+        });
 
         for (int s = 0; s < n; s++) {
             if (visited[s]) {
@@ -24,21 +36,30 @@ public class Prim {
             }
             components++;
             visited[s] = true;
-            queue.addAll(graph.getAdjacent(s));
+            push(queue, graph, s);
 
             while (!queue.isEmpty()) {
                 Edge e = queue.poll();
+                pops++;
+                examined++;
                 if (visited[e.to]) {
                     continue;
                 }
                 visited[e.to] = true;
                 result.add(e);
                 total += e.weight;
-                queue.addAll(graph.getAdjacent(e.to));
+                push(queue, graph, e.to);
             }
         }
 
         boolean connected = components <= 1;
-        return new MSTResult(result, total, connected, 0, 0, 0, 0, 0, 0, 0);
+        return new MSTResult(result, total, connected, examined, comparisons, 0, 0, pushes, pops, 0);
+    }
+
+    private void push(PriorityQueue<Edge> queue, Graph graph, int v) {
+        for (Edge next : graph.getAdjacent(v)) {
+            queue.add(next);
+            pushes++;
+        }
     }
 }
