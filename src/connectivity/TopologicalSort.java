@@ -11,6 +11,10 @@ import java.util.Queue;
 public class TopologicalSort {
 
     public TopoResult run(Graph graph) {
+        if (!graph.isDirected()) {
+            throw new IllegalArgumentException("Topological sort requires a directed graph");
+        }
+
         long start = System.nanoTime();
 
         int n = graph.getVertexCount();
