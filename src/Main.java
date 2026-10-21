@@ -132,6 +132,9 @@ public class Main {
                 System.out.println(source + " -> " + v + ": unreachable");
             }
         }
+        System.out.println("examined=" + r.edgesExamined + " relax=" + r.relaxations
+                + " pqPush=" + r.pqPushes + " pqPop=" + r.pqPops
+                + " cmp=" + r.comparisons + " ns=" + r.timeNanos);
         System.out.println();
     }
 
