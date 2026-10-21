@@ -77,7 +77,7 @@ Recursive DFS with `index`, `lowLink` and an explicit stack. When `lowLink[v] ==
 
 Binary heap with lazy deletion: instead of decreasing a key, a new node is pushed whenever a shorter distance is found, and outdated nodes are skipped when popped. Distances are `double`, unreachable vertices keep `Double.POSITIVE_INFINITY`. The algorithm rejects negative weights up front with an `IllegalArgumentException`, because the correctness argument for Dijkstra breaks with them. `relaxations` counts successful distance updates.
 
-Why Dijkstra fails with negative weights
+Why Dijkstra fails with negative weights:
 Dijkstra's  assumes edge weights are non-negative, meaning a vertex's first-pulled distance is permanently final. Negative edges break this rule by creating shorter paths later. Re-evaluating nodes slows the algorithm to exponential time, while negative cycles cause infinite loops.
 
 ### Validators
