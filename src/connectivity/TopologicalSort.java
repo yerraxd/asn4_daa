@@ -36,7 +36,9 @@ public class TopologicalSort {
             }
         }
 
-        boolean hasCycle = order.size() != n;
-        return new TopoResult(order, hasCycle);
+        if (order.size() != n) {
+            return new TopoResult(new ArrayList<>(), true);
+        }
+        return new TopoResult(order, false);
     }
 }
