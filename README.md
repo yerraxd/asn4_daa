@@ -304,6 +304,4 @@ Some guidance on when to use what, based on these results and the analysis:
 - Prim is better suited to dense graphs or when the graph is already stored as adjacency lists and a decrease-key heap (or an array version for very dense graphs) is available. The lazy heap version used here is the simplest to write but pays for it with 2E pushes.
 - Tarjan and Kahn are both linear, so they scale well. Tarjan answers connectivity questions on directed graphs (for example, which parts of a one-way road network can reach each other). Kahn gives a valid ordering of dependencies and doubles as a cycle detector.
 - Dijkstra is the right tool for single-source shortest paths when weights are non-negative. With negative weights it must not be used, and the implementation refuses such input.
-- The DSU with path compression and union by rank is fast enough that its cost is invisible next to sorting in Kruskal.
-
-What I would do with more time: more graph sizes with V and E varied independently, a median beside the average, a measured DSU ablation with the four variants, and an iterative version of Tarjan for very deep graphs.
+- The DSU with path compression and union by rank is fast enough that its cost is invisible next to sorting in Kruskal
