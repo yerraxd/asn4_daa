@@ -13,11 +13,21 @@ public class Main {
         g.addEdge(2, 3, 4);
         g.addEdge(3, 4, 2);
         g.addEdge(4, 5, 6);
+        print(new Kruskal().run(g));
 
-        MSTResult r = new Kruskal().run(g);
+        Graph d = new Graph(5, false);
+        d.addEdge(0, 1, 1);
+        d.addEdge(1, 2, 2);
+        d.addEdge(3, 4, 5);
+        print(new Kruskal().run(d));
+    }
+
+    private static void print(MSTResult r) {
         for (Edge e : r.edges) {
             System.out.println(e);
         }
         System.out.println("weight=" + r.totalWeight + " connected=" + r.connected);
+        System.out.println("examined=" + r.edgesExamined + " cmp=" + r.comparisons
+                + " find=" + r.findOps + " union=" + r.unionOps + " ns=" + r.timeNanos);
     }
 }
