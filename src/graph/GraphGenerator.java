@@ -21,7 +21,6 @@ public class GraphGenerator {
         Random random = new Random(seed);
         Graph graph = new Graph(n, false);
         Set<Long> used = new HashSet<>();
-
         List<Integer> order = new ArrayList<>();
         for (int i = 0; i < n; i++) {
             order.add(i);
@@ -69,6 +68,46 @@ public class GraphGenerator {
                 continue;
             }
             graph.addEdge(a, b, randomWeight(random));
+            added++;
+        }
+        return graph;
+    }
+
+    public static Graph dag(int n, int edges, long seed) {
+        if (n < 2) {
+            throw new IllegalArgumentException("Vertex count must be at least 2");
+        }
+        long maxEdges = (long) n * (n - 1) / 2;
+        if (edges < 0 || edges > maxEdges) {
+            throw new IllegalArgumentException("Edge count must be between 0 and " + maxEdges);
+        }
+
+        Random random = new Random(seed);
+        Graph graph = new Graph(n, true);
+        Set<Long> used = new HashSet<>();
+
+        List<Integer> order = new ArrayList<>();
+        for (int i = 0; i < n; i++) {
+            order.add(i);
+        }
+        Collections.shuffle(order, random);
+
+        int added = 0;
+        while (added < edges) {
+            int i = random.nextInt(n);
+            int j = random.nextInt(n);
+            if (i == j) {
+                continue;
+            }
+            if (i > j) {
+                int tmp = i;
+                i = j;
+                j = tmp;
+            }
+            if (!used.add((long) i * n + j)) {
+                continue;
+            }
+            graph.addEdge(order.get(i), order.get(j), randomWeight(random));
             added++;
         }
         return graph;
