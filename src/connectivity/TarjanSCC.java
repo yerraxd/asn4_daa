@@ -79,4 +79,25 @@ public class TarjanSCC {
             components.add(component);
         }
     }
+
+    public boolean isValidPartition(Graph graph, SCCResult result) {
+        int n = graph.getVertexCount();
+        int[] seen = new int[n];
+        int total = 0;
+        for (List<Integer> component : result.components) {
+            for (int v : component) {
+                seen[v]++;
+                total++;
+            }
+        }
+        if (total != n) {
+            return false;
+        }
+        for (int v = 0; v < n; v++) {
+            if (seen[v] != 1) {
+                return false;
+            }
+        }
+        return true;
+    }
 }
