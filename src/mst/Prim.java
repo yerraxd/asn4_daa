@@ -14,26 +14,31 @@ public class Prim {
         boolean[] visited = new boolean[n];
         List<Edge> result = new ArrayList<>();
         double total = 0;
+        int components = 0;
 
         PriorityQueue<Edge> queue = new PriorityQueue<>((a, b) -> Double.compare(a.weight, b.weight));
 
-        if (n > 0) {
-            visited[0] = true;
-            queue.addAll(graph.getAdjacent(0));
-        }
-
-        while (!queue.isEmpty()) {
-            Edge e = queue.poll();
-            if (visited[e.to]) {
+        for (int s = 0; s < n; s++) {
+            if (visited[s]) {
                 continue;
             }
-            visited[e.to] = true;
-            result.add(e);
-            total += e.weight;
-            queue.addAll(graph.getAdjacent(e.to));
+            components++;
+            visited[s] = true;
+            queue.addAll(graph.getAdjacent(s));
+
+            while (!queue.isEmpty()) {
+                Edge e = queue.poll();
+                if (visited[e.to]) {
+                    continue;
+                }
+                visited[e.to] = true;
+                result.add(e);
+                total += e.weight;
+                queue.addAll(graph.getAdjacent(e.to));
+            }
         }
 
-        boolean connected = n == 0 || result.size() == n - 1;
+        boolean connected = components <= 1;
         return new MSTResult(result, total, connected, 0, 0, 0, 0, 0, 0, 0);
     }
 }
