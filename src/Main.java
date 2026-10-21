@@ -9,6 +9,7 @@ import mst.MSTResult;
 import mst.Prim;
 import shortestpath.Dijkstra;
 import shortestpath.PathResult;
+import graph.GraphGenerator;
 
 public class Main {
     public static void main(String[] args) {
@@ -87,6 +88,15 @@ public class Main {
         oneWay.addEdge(2, 3, 1);
         oneWay.addEdge(4, 0, 1);
         dijkstra("One-way roads", oneWay, 0);
+        Graph genUndirected = GraphGenerator.connectedUndirected(100, 500, 42);
+        Graph genDirected = GraphGenerator.directed(100, 500, 42);
+        Graph genDag = GraphGenerator.dag(100, 500, 42);
+        System.out.println("=== Generated graphs ===");
+        System.out.println("Undirected connected: " + new Kruskal().run(genUndirected).connected
+                + ", edges=" + genUndirected.getEdgeCount());
+        System.out.println("Directed has cycle: " + new TopologicalSort().run(genDirected).hasCycle);
+        System.out.println("DAG has cycle: " + new TopologicalSort().run(genDag).hasCycle);
+        System.out.println("Directed SCC count: " + new TarjanSCC().run(genDirected).components.size());
     }
 
     private static void compare(String name, Graph graph) {
