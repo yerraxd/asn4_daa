@@ -5,6 +5,10 @@ import graph.GraphGenerator;
 import mst.Kruskal;
 import mst.MSTResult;
 import mst.Prim;
+import connectivity.SCCResult;
+import connectivity.TarjanSCC;
+import connectivity.TopoResult;
+import connectivity.TopologicalSort;
 
 public class Benchmark {
     private static final long SEED = 42;
@@ -32,9 +36,15 @@ public class Benchmark {
             int n = size[0];
             int m = size[1];
             Graph undirected = GraphGenerator.connectedUndirected(n, m, SEED);
+            Graph directed = GraphGenerator.directed(n, m, SEED);
+            Graph dag = GraphGenerator.dag(n, m, SEED);
 
             measure("Kruskal", "undirected", n, m, () -> kruskal(undirected));
             measure("Prim", "undirected", n, m, () -> prim(undirected));
+            measure("TopologicalSort", "dag", n, m, () -> topo(dag));
+            measure("TopologicalSort", "cyclic", n, m, () -> topo(directed));
+            measure("Tarjan", "directed", n, m, () -> scc(directed));
+            measure("Tarjan", "dag", n, m, () -> scc(dag));
         }
     }
     private static void measure(String algorithm, String graphType, int n, int m, Run run) {
@@ -66,6 +76,25 @@ public class Benchmark {
         c.comparisons = r.comparisons;
         c.pushes = r.pqPushes;
         c.pops = r.pqPops;
+        return c;
+    }
+
+    private static Counters topo(Graph g) {
+        TopoResult r = new TopologicalSort().run(g);
+        Counters c = new Counters();
+        c.time = r.timeNanos;
+        c.examined = r.edgesExamined;
+        c.pushes = r.queuePushes;
+        c.pops = r.queuePops;
+        return c;
+    }
+
+    private static Counters scc(Graph g) {
+        SCCResult r = new TarjanSCC().run(g);
+        Counters c = new Counters();
+        c.time = r.timeNanos;
+        c.examined = r.edgesExamined;
+        c.dfs = r.dfsCalls;
         return c;
     }
 }
