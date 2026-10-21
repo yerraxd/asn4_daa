@@ -5,7 +5,6 @@ import graph.Edge;
 import graph.Graph;
 
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.List;
 
 public class Kruskal {
@@ -13,13 +12,20 @@ public class Kruskal {
     public MSTResult run(Graph graph) {
         int n = graph.getVertexCount();
         List<Edge> sorted = new ArrayList<>(graph.getEdges());
-        sorted.sort(Comparator.comparingDouble(e -> e.weight));
+
+        long[] comparisons = {0};
+        sorted.sort((a, b) -> {
+            comparisons[0]++;
+            return Double.compare(a.weight, b.weight);
+        });
 
         DSU dsu = new DSU(n);
         List<Edge> result = new ArrayList<>();
         double total = 0;
+        long examined = 0;
 
         for (Edge e : sorted) {
+            examined++;
             if (dsu.union(e.from, e.to)) {
                 result.add(e);
                 total += e.weight;
@@ -30,6 +36,6 @@ public class Kruskal {
         }
 
         boolean connected = n == 0 || result.size() == n - 1;
-        return new MSTResult(result, total, connected);
+        return new MSTResult(result, total, connected, examined, comparisons[0]);
     }
 }
