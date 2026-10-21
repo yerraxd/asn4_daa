@@ -41,6 +41,6 @@ public class Kruskal {
         long time = System.nanoTime() - start;
 
         return new MSTResult(result, total, connected, examined, comparisons[0],
-                dsu.getFindCalls(), dsu.getUnionCalls(), time);
+                dsu.getFindCalls(), dsu.getUnionCalls(), 0, 0, time);
     }
 }
