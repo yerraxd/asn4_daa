@@ -7,6 +7,8 @@ import java.util.Arrays;
 import java.util.PriorityQueue;
 
 public class Dijkstra {
+    private long examined;
+    private long relaxations;
 
     public PathResult run(Graph graph, int source) {
         int n = graph.getVertexCount();
@@ -18,6 +20,9 @@ public class Dijkstra {
                 throw new IllegalArgumentException("Dijkstra requires non-negative edge weights");
             }
         }
+
+        examined = 0;
+        relaxations = 0;
 
         double[] dist = new double[n];
         int[] parent = new int[n];
@@ -35,15 +40,17 @@ public class Dijkstra {
                 continue;
             }
             for (Edge e : graph.getAdjacent(u)) {
+                examined++;
                 double candidate = dist[u] + e.weight;
                 if (candidate < dist[e.to]) {
                     dist[e.to] = candidate;
                     parent[e.to] = u;
+                    relaxations++;
                     queue.add(new Node(e.to, candidate));
                 }
             }
         }
-        return new PathResult(source, dist, parent);
+        return new PathResult(source, dist, parent, examined, relaxations);
     }
 
     private static class Node {
