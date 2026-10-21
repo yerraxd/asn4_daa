@@ -10,18 +10,23 @@ import java.util.List;
 
 public class Kruskal {
 
-    public List<Edge> run(Graph graph) {
+    public MSTResult run(Graph graph) {
+        int n = graph.getVertexCount();
         List<Edge> sorted = new ArrayList<>(graph.getEdges());
         sorted.sort(Comparator.comparingDouble(e -> e.weight));
 
-        DSU dsu = new DSU(graph.getVertexCount());
+        DSU dsu = new DSU(n);
         List<Edge> result = new ArrayList<>();
+        double total = 0;
 
         for (Edge e : sorted) {
             if (dsu.union(e.from, e.to)) {
                 result.add(e);
+                total += e.weight;
             }
         }
-        return result;
+
+        boolean connected = n == 0 || result.size() == n - 1;
+        return new MSTResult(result, total, connected);
     }
 }
