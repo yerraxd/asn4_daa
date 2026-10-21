@@ -7,6 +7,8 @@ import graph.Graph;
 import mst.Kruskal;
 import mst.MSTResult;
 import mst.Prim;
+import shortestpath.Dijkstra;
+import shortestpath.PathResult;
 
 public class Main {
     public static void main(String[] args) {
@@ -56,6 +58,18 @@ public class Main {
         scc("City with one-way roads", city);
         scc("SCC on DAG", dag);
         scc("SCC on graph with cycle", cyclic);
+
+        Graph road = new Graph(6, false);
+        road.addEdge(0, 1, 7);
+        road.addEdge(0, 2, 9);
+        road.addEdge(0, 5, 14);
+        road.addEdge(1, 2, 10);
+        road.addEdge(1, 3, 15);
+        road.addEdge(2, 3, 11);
+        road.addEdge(2, 5, 2);
+        road.addEdge(3, 4, 6);
+        road.addEdge(4, 5, 9);
+        dijkstra("City roads", road, 0);
     }
 
     private static void compare(String name, Graph graph) {
@@ -104,6 +118,16 @@ public class Main {
                 + (r.components.size() == graph.getVertexCount()));
         System.out.println("examined=" + r.edgesExamined + " dfs=" + r.dfsCalls
                 + " ns=" + r.timeNanos);
+        System.out.println();
+    }
+
+    private static void dijkstra(String name, Graph graph, int source) {
+        PathResult r = new Dijkstra().run(graph, source);
+        System.out.println("=== " + name + " ===");
+        for (int v = 0; v < graph.getVertexCount(); v++) {
+            System.out.println(source + " -> " + v + ": dist=" + r.distances[v]
+                    + " path=" + r.getPath(v));
+        }
         System.out.println();
     }
 
