@@ -23,6 +23,9 @@ public class Kruskal {
             if (dsu.union(e.from, e.to)) {
                 result.add(e);
                 total += e.weight;
+                if (result.size() == n - 1) {
+                    break;
+                }
             }
         }
 
