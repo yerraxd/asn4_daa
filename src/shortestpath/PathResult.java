@@ -13,10 +13,11 @@ public class PathResult {
     public final long pqPushes;
     public final long pqPops;
     public final long comparisons;
+    public final long timeNanos;
 
     public PathResult(int source, double[] distances, int[] parents,
                       long edgesExamined, long relaxations,
-                      long pqPushes, long pqPops, long comparisons) {
+                      long pqPushes, long pqPops, long comparisons, long timeNanos) {
         this.source = source;
         this.distances = distances;
         this.parents = parents;
@@ -25,6 +26,7 @@ public class PathResult {
         this.pqPushes = pqPushes;
         this.pqPops = pqPops;
         this.comparisons = comparisons;
+        this.timeNanos = timeNanos;
     }
 
     public boolean isReachable(int v) {

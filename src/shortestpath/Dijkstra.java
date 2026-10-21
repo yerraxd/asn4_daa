@@ -14,6 +14,8 @@ public class Dijkstra {
     private long comparisons;
 
     public PathResult run(Graph graph, int source) {
+        long startTime = System.nanoTime();
+
         int n = graph.getVertexCount();
         if (source < 0 || source >= n) {
             throw new IllegalArgumentException("Invalid source vertex: " + source);
@@ -62,7 +64,10 @@ public class Dijkstra {
                 }
             }
         }
-        return new PathResult(source, dist, parent, examined, relaxations, pushes, pops, comparisons);
+
+        long time = System.nanoTime() - startTime;
+        return new PathResult(source, dist, parent, examined, relaxations,
+                pushes, pops, comparisons, time);
     }
 
     private static class Node {
