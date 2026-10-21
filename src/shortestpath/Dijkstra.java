@@ -22,6 +22,9 @@ public class Dijkstra {
         while (!queue.isEmpty()) {
             double[] top = queue.poll();
             int u = (int) top[1];
+            if (top[0] > dist[u]) {
+                continue;
+            }
             for (Edge e : graph.getAdjacent(u)) {
                 double candidate = dist[u] + e.weight;
                 if (candidate < dist[e.to]) {
