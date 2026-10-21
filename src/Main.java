@@ -54,6 +54,8 @@ public class Main {
         city.addEdge(6, 7, 1);
         city.addEdge(7, 6, 1);
         scc("City with one-way roads", city);
+        scc("SCC on DAG", dag);
+        scc("SCC on graph with cycle", cyclic);
     }
 
     private static void compare(String name, Graph graph) {
@@ -91,14 +93,18 @@ public class Main {
                 + " pop=" + r.queuePops + " ns=" + r.timeNanos);
         System.out.println();
     }
-
     private static void scc(String name, Graph graph) {
-        SCCResult r = new TarjanSCC().run(graph);
+        TarjanSCC tarjan = new TarjanSCC();
+        SCCResult r = tarjan.run(graph);
         System.out.println("=== " + name + " ===");
         System.out.println("Components: " + r.components.size());
         System.out.println(r.components);
+        System.out.println("Valid partition: " + tarjan.isValidPartition(graph, r));
+        System.out.println("Every component has one vertex: "
+                + (r.components.size() == graph.getVertexCount()));
         System.out.println("examined=" + r.edgesExamined + " dfs=" + r.dfsCalls
                 + " ns=" + r.timeNanos);
         System.out.println();
     }
+
 }
