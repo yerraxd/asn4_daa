@@ -13,17 +13,6 @@ This project implements six graph components in plain Java, with no external lib
 
 Every algorithm returns a result object that holds the answer, the running time measured with `System.nanoTime()`, and operation counters (edges examined, comparisons, DSU calls, heap pushes and pops, DFS calls, relaxations). The benchmark and the tests read these counters, so nothing is counted outside the algorithms themselves.
 
-## How to run
-Requirements: JDK 9 or newer (the code uses List.of). No external libraries.
-Run all commands from the project root, because the benchmark and the tests
-write their tables to results/tables/ using a relative path.
-javac -d out src/*.java src/*/*.java
-java -cp out Main
-java -cp out test.AlgorithmTests
-java -cp out benchmark.Benchmark
-- Main prints a demo of every algorithm.
-- test.AlgorithmTests runs the 40 checks and writes results/tables/tests.csv.
-- benchmark.Benchmark runs the experiments and writes results/tables/benchmark.csv.
 
 ### Graph representation
 
@@ -48,9 +37,20 @@ results/
   plots/          PNG files used in this report
 README.md
 ```
-
+## How to run
+Requirements: JDK 9 or newer (the code uses List.of). No external libraries.
+Run all commands from the project root, because the benchmark and the tests
+write their tables to results/tables/ using a relative path.
+javac -d out src/*.java src/*/*.java
+java -cp out Main
+java -cp out test.AlgorithmTests
+java -cp out benchmark.Benchmark
+- Main prints a demo of every algorithm.
+- test.AlgorithmTests runs the 40 checks and writes results/tables/tests.csv.
+- benchmark.Benchmark runs the experiments and writes results/tables/benchmark.csv.
 
 ## Implementation
+
 
 ### DSU
 
@@ -76,7 +76,7 @@ Recursive DFS with `index`, `lowLink` and an explicit stack. When `lowLink[v] ==
 
 Binary heap with lazy deletion: instead of decreasing a key, a new node is pushed whenever a shorter distance is found, and outdated nodes are skipped when popped. Distances are `double`, unreachable vertices keep `Double.POSITIVE_INFINITY`. The algorithm rejects negative weights up front with an `IllegalArgumentException`, because the correctness argument for Dijkstra breaks with them. `relaxations` counts successful distance updates.
 
-## Why Dijkstra fails with negative weights 
+#### Why Dijkstra fails with negative weights 
 Dijkstra relies on one rule, when a vertex is taken from the heap with the smallest distance, that distance is final, because any other path to it goes through vertices that are not closer and can only add non-negative cost. A negative edge breaks this rule. Example: edges 0->1 (4), 0->2 (5), 2->1 (-3). Vertex 1 is taken first with distance 4 and treated as final, but the real shortest path is 0->2->1 with length 2. Re-pushing vertices (as lazy deletion allows) can sometimes repair this, but then a vertex may be processed many times (exponential time in the worst case), and with a negative cycle the algorithm never stops. So the implementation rejects negative weights up front.
 
 ### Validators
