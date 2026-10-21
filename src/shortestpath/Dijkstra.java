@@ -15,17 +15,9 @@ public class Dijkstra {
 
     public PathResult run(Graph graph, int source) {
         long startTime = System.nanoTime();
+        checkInput(graph, source);
 
         int n = graph.getVertexCount();
-        if (source < 0 || source >= n) {
-            throw new IllegalArgumentException("Invalid source vertex: " + source);
-        }
-        for (Edge e : graph.getEdges()) {
-            if (e.weight < 0) {
-                throw new IllegalArgumentException("Dijkstra requires non-negative edge weights");
-            }
-        }
-
         examined = 0;
         relaxations = 0;
         pushes = 0;
@@ -68,6 +60,17 @@ public class Dijkstra {
         long time = System.nanoTime() - startTime;
         return new PathResult(source, dist, parent, examined, relaxations,
                 pushes, pops, comparisons, time);
+    }
+
+    private void checkInput(Graph graph, int source) {
+        if (source < 0 || source >= graph.getVertexCount()) {
+            throw new IllegalArgumentException("Invalid source vertex: " + source);
+        }
+        for (Edge e : graph.getEdges()) {
+            if (e.weight < 0) {
+                throw new IllegalArgumentException("Dijkstra requires non-negative edge weights");
+            }
+        }
     }
 
     public boolean isValid(Graph graph, PathResult r) {
