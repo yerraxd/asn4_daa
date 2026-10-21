@@ -9,6 +9,8 @@ import connectivity.SCCResult;
 import connectivity.TarjanSCC;
 import connectivity.TopoResult;
 import connectivity.TopologicalSort;
+import shortestpath.Dijkstra;
+import shortestpath.PathResult;
 
 public class Benchmark {
     private static final long SEED = 42;
@@ -45,6 +47,7 @@ public class Benchmark {
             measure("TopologicalSort", "cyclic", n, m, () -> topo(directed));
             measure("Tarjan", "directed", n, m, () -> scc(directed));
             measure("Tarjan", "dag", n, m, () -> scc(dag));
+            measure("Dijkstra", "undirected", n, m, () -> dijkstra(undirected));
         }
     }
     private static void measure(String algorithm, String graphType, int n, int m, Run run) {
@@ -95,6 +98,17 @@ public class Benchmark {
         c.time = r.timeNanos;
         c.examined = r.edgesExamined;
         c.dfs = r.dfsCalls;
+        return c;
+    }
+    private static Counters dijkstra(Graph g) {
+        PathResult r = new Dijkstra().run(g, 0);
+        Counters c = new Counters();
+        c.time = r.timeNanos;
+        c.examined = r.edgesExamined;
+        c.comparisons = r.comparisons;
+        c.pushes = r.pqPushes;
+        c.pops = r.pqPops;
+        c.relaxations = r.relaxations;
         return c;
     }
 }
