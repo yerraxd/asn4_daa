@@ -11,10 +11,10 @@ public class DSU {
     }
 
     public int find(int x) {
-        while (parent[x] != x) {
-            x = parent[x];
+        if (parent[x] != x) {
+            parent[x] = find(parent[x]);
         }
-        return x;
+        return parent[x];
     }
 
     public boolean union(int a, int b) {
