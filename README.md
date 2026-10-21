@@ -282,7 +282,7 @@ Test results table:
 | 12 | Duplicate weights K5: Prim = 4 | PASS |
 | 13 | Single vertex: Kruskal weight 0, no edges, connected | PASS |
 | 14 | Single vertex: Prim weight 0, no edges, connected | PASS |
-| 15 | Single vertex: topo order is empty, no cycle | PASS |
+| 15 | Single vertex: topo order = [0], no cycle | PASS |
 | 16 | Single vertex: one SCC | PASS |
 | 17 | Single vertex: dist[0] = 0 | PASS |
 | 18 | Cycle: detected by topological sort | PASS |
