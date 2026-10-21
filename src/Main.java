@@ -2,6 +2,7 @@ import graph.Edge;
 import graph.Graph;
 import mst.Kruskal;
 import mst.MSTResult;
+import mst.Prim;
 
 public class Main {
     public static void main(String[] args) {
@@ -13,21 +14,33 @@ public class Main {
         g.addEdge(2, 3, 4);
         g.addEdge(3, 4, 2);
         g.addEdge(4, 5, 6);
-        print(new Kruskal().run(g));
+        compare("Connected graph", g);
 
         Graph d = new Graph(5, false);
         d.addEdge(0, 1, 1);
         d.addEdge(1, 2, 2);
         d.addEdge(3, 4, 5);
-        print(new Kruskal().run(d));
+        compare("Disconnected graph", d);
     }
 
-    private static void print(MSTResult r) {
+    private static void compare(String name, Graph graph) {
+        MSTResult k = new Kruskal().run(graph);
+        MSTResult p = new Prim().run(graph);
+
+        System.out.println("=== " + name + " ===");
+        print("Kruskal", k);
+        print("Prim", p);
+        System.out.println("Same weight: " + (Math.abs(k.totalWeight - p.totalWeight) < 1e-9));
+        System.out.println();
+    }
+
+    private static void print(String name, MSTResult r) {
+        System.out.println(name + ": weight=" + r.totalWeight + " connected=" + r.connected);
         for (Edge e : r.edges) {
-            System.out.println(e);
+            System.out.println("  " + e);
         }
-        System.out.println("weight=" + r.totalWeight + " connected=" + r.connected);
-        System.out.println("examined=" + r.edgesExamined + " cmp=" + r.comparisons
-                + " find=" + r.findOps + " union=" + r.unionOps + " ns=" + r.timeNanos);
+        System.out.println("  examined=" + r.edgesExamined + " cmp=" + r.comparisons
+                + " find=" + r.findOps + " union=" + r.unionOps
+                + " pqPush=" + r.pqPushes + " pqPop=" + r.pqPops + " ns=" + r.timeNanos);
     }
 }
