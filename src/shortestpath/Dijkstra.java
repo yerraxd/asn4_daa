@@ -10,6 +10,10 @@ public class Dijkstra {
 
     public PathResult run(Graph graph, int source) {
         int n = graph.getVertexCount();
+        if (source < 0 || source >= n) {
+            throw new IllegalArgumentException("Invalid source vertex: " + source);
+        }
+
         double[] dist = new double[n];
         int[] parent = new int[n];
         Arrays.fill(dist, Double.POSITIVE_INFINITY);
