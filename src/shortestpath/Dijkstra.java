@@ -13,6 +13,11 @@ public class Dijkstra {
         if (source < 0 || source >= n) {
             throw new IllegalArgumentException("Invalid source vertex: " + source);
         }
+        for (Edge e : graph.getEdges()) {
+            if (e.weight < 0) {
+                throw new IllegalArgumentException("Dijkstra requires non-negative edge weights");
+            }
+        }
 
         double[] dist = new double[n];
         int[] parent = new int[n];
