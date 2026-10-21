@@ -10,17 +10,51 @@ public class Benchmark {
     private static final int REPEATS = 5;
     private static final int[][] SIZES = {{10, 30}, {100, 500}, {1000, 5000}};
 
+    private interface Run {
+        Counters run();
+    }
+
+    private static class Counters {
+        long time;
+        long examined;
+        long comparisons;
+        long find;
+        long union;
+        long pushes;
+        long pops;
+        long dfs;
+        long relaxations;
+    }
+
     public static void main(String[] args) {
         for (int[] size : SIZES) {
-            Graph graph = GraphGenerator.connectedUndirected(size[0], size[1], SEED);
-            long total = 0;
-            MSTResult last = null;
-            for (int i = 0; i < REPEATS; i++) {
-                last = new Kruskal().run(graph);
-                total += last.timeNanos;
-            }
-            System.out.println("Kruskal V=" + size[0] + " E=" + size[1]
-                    + " avgNs=" + total / REPEATS + " examined=" + last.edgesExamined);
+            int n = size[0];
+            int m = size[1];
+            Graph undirected = GraphGenerator.connectedUndirected(n, m, SEED);
+
+            measure("Kruskal", "undirected", n, m, () -> kruskal(undirected));
         }
+    }
+
+    private static void measure(String algorithm, String graphType, int n, int m, Run run) {
+        long total = 0;
+        Counters last = null;
+        for (int i = 0; i < REPEATS; i++) {
+            last = run.run();
+            total += last.time;
+        }
+        System.out.println(algorithm + " " + graphType + " V=" + n + " E=" + m
+                + " avgNs=" + total / REPEATS + " examined=" + last.examined);
+    }
+
+    private static Counters kruskal(Graph g) {
+        MSTResult r = new Kruskal().run(g);
+        Counters c = new Counters();
+        c.time = r.timeNanos;
+        c.examined = r.edgesExamined;
+        c.comparisons = r.comparisons;
+        c.find = r.findOps;
+        c.union = r.unionOps;
+        return c;
     }
 }
